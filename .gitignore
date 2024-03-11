@@ -1,0 +1,8 @@
+# python cache
+__pycache__/
+
+# environment
+.env
+
+# launch json file
+launch.json
