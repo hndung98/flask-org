@@ -1,4 +1,5 @@
-from flask import Blueprint
+import asyncio
+from flask import Blueprint, request
 
 from src.services.user_service import *
 
@@ -7,14 +8,38 @@ user_controller = Blueprint('user_controller', __name__,
 
 
 @user_controller.get('/users')
-def get():
+async def get():
     # Do something
-    res = get_all_users()
-    return res
+    res = await get_all_users()
+    if not res["is_success"]:
+        return {
+            "is_success": False,
+            "message": res["message"]
+        }
+    return {
+        "is_success": True,
+        "data": res["data"]
+    }
 
 
 @user_controller.post('/user')
-def post(data):
+async def post():
     # Do something
-    res = save_new_user(data)
-    return res
+    name = request.form['name']
+    email = request.form['email']
+    data = {
+        'name': name,
+        'email': email
+    }
+    # asyncio.run(save_new_user(data))
+    res = await save_new_user(data)
+    if not res["is_success"]:
+        return {
+            "is_success": False,
+            "message": res["message"]
+
+        }
+    return {
+        "is_success": True,
+        "message": "completed"
+    }

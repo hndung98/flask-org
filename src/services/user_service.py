@@ -1,5 +1,13 @@
+import asyncio
+import json
+from prisma import Prisma
 
-def get_all_users():
+class Object:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+
+async def get_all_users():
     """_summary_
 
     Args:
@@ -8,24 +16,30 @@ def get_all_users():
     Returns:
         _type_: _description_
     """
-    list_users = [
-        {
-            "id": 1,
-            "name": "A1"
-        },
-        {
-            "id": 2,
-            "name": "A2"
-        },
-        {
-            "id": 3,
-            "name": "A3"
+    try:
+        prisma = Prisma()
+        await prisma.connect()
+
+        # write your queries here
+        users = await prisma.user.find_many()
+
+        data = Object()
+        data.users = users
+
+        await prisma.disconnect()
+        return {
+            "is_success": True,
+            "data": json.loads(data.toJSON()),
         }
-    ]
-    return list_users
+    except Exception as e:
+        print(e)
+        return {
+            "is_success": False,
+            "message": str(e)
+        }
 
 
-def save_new_user(data):
+async def save_new_user(data):
     """_summary_
 
     Args:
@@ -34,4 +48,23 @@ def save_new_user(data):
     Returns:
         _type_: _description_
     """
-    return []
+    try:
+        prisma = Prisma()
+        await prisma.connect()
+
+        # write your queries here
+        user = await prisma.user.create(
+            data=data,
+        )
+
+        await prisma.disconnect()
+        return {
+            "is_success": True,
+            "data": user
+        }
+    except Exception as e:
+        print(e)
+        return {
+            "is_success": False,
+            "message": str(e)
+        }
