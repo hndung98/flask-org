@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 
 settings = Blueprint('settings', __name__,
-                     url_prefix='/settings',
+                     url_prefix='/app/settings',
                      template_folder='../templates/settings')
 
 @settings.route('/')

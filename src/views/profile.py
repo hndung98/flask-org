@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 
 profile = Blueprint('profile', __name__,
-                    url_prefix='/<user_url_slug>',
+                    url_prefix='/app/<user_url_slug>',
                     template_folder='../templates/profile')
 
 @profile.route('/')
