@@ -1,15 +1,19 @@
 import asyncio
+import json
 from flask import Blueprint, request
-from flask_restx import Api, Namespace, Resource, fields
+from flask_restx import Api, Namespace, Resource, fields, reqparse
 
 from src.services.user_service import *
 
 user_namespace = Namespace('user_namespace', 'user service related endpoints')
 
+wild = fields.Wildcard(fields.String)
 get_user_model = user_namespace.model('User', {
     'is_success': fields.String(
         description='name message'
     ),
+    'data': wild
+    ,
     'message': fields.String(
         description='email message'
     )
@@ -24,6 +28,10 @@ post_user_model = user_namespace.model('User', {
 })
 
 get_user_example = {'message': 'user service!'}
+
+post_parser = user_namespace.parser()
+post_parser.add_argument('name', required=True, type=str, help='name of user', location='form')
+post_parser.add_argument('email', required=True, type=str, help='email of user', location='form')
 
 @user_namespace.route('/user')
 class User(Resource):
@@ -49,6 +57,7 @@ class User(Resource):
             "data": res["data"]
         }
     
+    @user_namespace.expect(post_parser)
     @user_namespace.response(500, 'Internal Server error')
     def post(self):
         '''post user message endpoint'''
