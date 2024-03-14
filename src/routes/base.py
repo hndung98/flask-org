@@ -4,7 +4,7 @@ from flask_restx import Namespace, Resource, fields
 
 from src.services.base import *
 
-login_namespace = Namespace('login_namespace', 'login service related endpoints', path="/api/login")
+login_namespace = Namespace('login_namespace', 'login service related endpoints', path="/api/v1/login")
 
 login_parser = login_namespace.parser()
 login_parser.add_argument('name', required=True, type=str, help='name of user', location='form')

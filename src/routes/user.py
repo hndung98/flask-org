@@ -4,7 +4,30 @@ from flask_restx import Namespace, Resource, fields
 
 from src.services.user import *
 
-user_namespace = Namespace('user_namespace', 'user service related endpoints', path="/api/user")
+user_namespace = Namespace('user_namespace', 'user service related endpoints', path="/api/v1/user")
+
+api_key_authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-API-KEY'
+    }
+}
+basic_authorizations = {
+    'basic': {
+        'type': 'basic',
+        'scheme': 'basic',
+    }
+}
+bearer_authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    }
+}
+
+user_namespace.authorizations = bearer_authorizations
 
 wild = fields.Wildcard(fields.String)
 get_user_model = user_namespace.model('get_user_model', {
@@ -31,6 +54,7 @@ get_user_example = {'message': 'user service!'}
 post_parser = user_namespace.parser()
 post_parser.add_argument('name', required=True, type=str, help='name of user', location='form')
 post_parser.add_argument('email', required=True, type=str, help='email of user', location='form')
+
 
 @user_namespace.route('/')
 class User(Resource):

@@ -14,8 +14,9 @@ app.config['RESTX_MASK_SWAGGER'] = False
 
 api = Api(app,
           version='1.0',
-          title='HD API',
-          description='A Flask API',
+          title="Flask API with JWT-Based Authentication",
+          description="Welcome to the Swagger UI documentation site!",
+          doc="/ui",
           )
 
 # add routes
