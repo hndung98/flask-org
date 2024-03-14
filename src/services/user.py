@@ -1,11 +1,7 @@
-import asyncio
 import json
 from prisma import Prisma
 
-class Object:
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+from src.models.object import Object
 
 async def get_all_users():
     """_summary_
@@ -23,13 +19,13 @@ async def get_all_users():
         # write your queries here
         users = await prisma.user.find_many()
 
-        data = Object()
-        data.users = users
+        data_object = Object()
+        data_object.users = users
 
         await prisma.disconnect()
         return {
             "is_success": True,
-            "data": json.loads(data.toJSON()),
+            "data": json.loads(data_object.toJSON()),
         }
     except Exception as e:
         print(e)
@@ -57,10 +53,13 @@ async def save_new_user(data):
             data=data,
         )
 
+        data_object = Object()
+        data_object.user = user
+
         await prisma.disconnect()
         return {
             "is_success": True,
-            "data": user
+            "data": json.loads(data_object.toJSON())
         }
     except Exception as e:
         print(e)
