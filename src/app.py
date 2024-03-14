@@ -12,7 +12,11 @@ from src.views.settings import settings
 app = Flask(__name__)
 app.config['RESTX_MASK_SWAGGER'] = False
 
-api = Api(app)
+api = Api(app,
+          version='1.0',
+          title='HyperD API',
+          description='A sample API',
+          )
 
 api.add_namespace(user_namespace)
 
